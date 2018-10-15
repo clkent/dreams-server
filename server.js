@@ -11,7 +11,7 @@ const { dbConnect } = require('./db.mongoose');
 //routers
 const { authRouter } = require('./auth/auth.router');
 const { userRouter } = require('./user/user.router');
-//const { postRouter } = require('./post/post.router');
+const { postRouter } = require('./post/post.router');
 
 const app = express();
 
@@ -33,7 +33,7 @@ app.use(
 //router setup
 app.use('/api/auth', authRouter); // Redirects all calls to /api/user to userRouter.
 app.use('/api/user', userRouter); // Redirects all calls to /api/user to userRouter.
-// app.use('/api/post', postRouter); // Redirects all calls to /api/post to postRouter.
+app.use('/api/post', postRouter); // Redirects all calls to /api/post to postRouter.
 
 // In case we make a HTTP request that is unhandled by our Express server, we return a 404 status code and the message "Not Found."
 app.use('*', function(req, res) {
