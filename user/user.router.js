@@ -35,8 +35,7 @@ userRouter.post('/', (request, response, next) => {
     .then(user => {
       if (user) {
         return response.status(HTTP_STATUS_CODES.BAD_REQUEST).json({
-          error:
-            'Database Error: A user with that username and/or email already exists.'
+          message: 'A user with that username and/or email already exists.'
         });
       }
       // if good to go - hash pw before saving it
