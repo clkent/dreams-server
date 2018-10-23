@@ -1,2 +1,9 @@
 language: node_js
 node_js: node
+deploy:
+  provider: heroku
+  api_key:
+    secure: Bxh2ZG3qTdzuSrSwYH9FfODoQJlEAx7lkrq5RHlSOZYaD3Bpv3BsFM1f7V8t0PfyA9HiAclQETmgSJk0mWsnxFIQ/Xo+dMY2b7l8Hh9sBMqvWCM6UYxB1qOJ73ULxm6zB3JLiT/mTdYCFIOn2yMhLPAgE6Qc4GH+7JGknTSRd85sYz9k+X0yHLskuVQpSjq6wec5q4cnC/iNsXIKXIj+8SgoL7NE0FmRJakf3GhYdtM6+R7y5zE1li5aeqv9rjDi0fhzTHLCjFg8EJnexdp6ElcDPUkHMPP5GVUOpkdIe4ThpARamrKPpsg1+0ei/TW3oveHlF+m1TNtpmzSyQWaC35jYa4G4Na2cU3da0lWobc7OQquPF6jX0f+w+4gIM+NldJjcKOH9Bo4hkoOxrJ9kHuNc7x6irHsETclIsHLjwK9IMPI0IKwSy4H+HRh/7fIECmzzCiWgzGxAEb5JpmizkS5NsZwYpkBcDpbQz0BTY/+MUDe7vXPuN/N4Do81S978KQwx+oUWgdfhiC0dpcBpe0AVieycGfCvJHGUTy+TqokEXOLwcQLDbO8XkHdlz85yT8IwJ+gNQ/LmtucqleaMAESwXr4tFrqePptjV0eAUd59+qfc1YJVSNqwGGaR4iUqYAQUroIn1hPe45LJ/R0PlZATy3MhKyWbykoobz9FBo=
+  app: dreamrecall-server
+  on:
+    repo: clkent/dreams-server
