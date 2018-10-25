@@ -24,7 +24,7 @@ userRouter.post('/', (request, response, next) => {
     // If validation error is found, end the the request with a server error and error message.
     return response
       .status(HTTP_STATUS_CODES.BAD_REQUEST)
-      .json({ error: validation.error });
+      .json({ message: validation.error });
   }
 
   //verify the new user's email and username don't already exist
