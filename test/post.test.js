@@ -2,18 +2,24 @@
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 const mongoose = require('mongoose');
+const jwt = require('jsonwebtoken');
 
-const app = require('../server');
-const { TEST_MONGODB_URI } = require('../config');
+const { app } = require('../server');
+const { TEST_MONGODB_URI, JWT_EXPIRY, JWT_SECRET } = require('../config');
 
 const { Post } = require('../post/post.model');
-
 const { posts } = require('../db/seed/posts');
+
+const { User } = require('../user/user.model');
+const { users } = require('../db/seed/users');
 
 const expect = chai.expect;
 chai.use(chaiHttp);
 
 describe('Dream Recall API – Posts', function() {
+  let user;
+  let token;
+
   //hooks
   before(function() {
     return mongoose
@@ -22,43 +28,62 @@ describe('Dream Recall API – Posts', function() {
   });
 
   beforeEach(function() {
-    return Post.insertMany(posts);
+    return Promise.all([User.insertMany(users), Post.insertMany(posts)]).then(
+      ([users]) => {
+        user = users[0];
+        token = jwt.sign({ user: user.serialize() }, JWT_SECRET, {
+          subject: user.username,
+          expiresIn: JWT_EXPIRY,
+          algorithm: 'HS256'
+        });
+      }
+    );
   });
 
   afterEach(function() {
-    return mongoose.connection.db.dropDatabase();
+    return Promise.all([User.deleteMany(), Post.deleteMany()]);
   });
 
   after(function() {
     return mongoose.disconnect();
   });
 
-  describe('GET /api/posts', function() {
+  describe('GET /api/post', function() {
     it('should return the correct number of Posts', function() {
       return Promise.all([
         Post.find(),
-        chai.request(app).get('/api/posts')
+        chai
+          .request(app)
+          .get('/api/post')
+          .set('Authorization', `Bearer ${token}`)
       ]).then(([data, res]) => {
+        console.log(data);
+        const filteredData = data.filter(post => {
+          return post.user === res.body[0].user.id;
+        });
         expect(res).to.have.status(200);
         expect(res).to.be.json;
         expect(res.body).to.be.a('array');
-        expect(res.body).to.have.length(data.length);
+        expect(res.body).to.have.length(filteredData.length);
       });
     });
 
     it('should return a list with the correct right fields', function() {
       return Promise.all([
         Post.find().sort({ updatedAt: 'desc' }),
-        chai.request(app).get('/api/posts')
+        chai
+          .request(app)
+          .get('/api/post')
+          .set('Authorization', `Bearer ${token}`)
       ]).then(([data, res]) => {
         expect(res).to.have.status(200);
         expect(res).to.be.json;
         expect(res.body).to.be.a('array');
-        expect(res.body).to.have.length(data.length);
         res.body.forEach(function(item, i) {
           expect(item).to.be.a('object');
           expect(item).to.include.all.keys(
             'id',
+            'user',
             'title',
             'content',
             'createdAt',
