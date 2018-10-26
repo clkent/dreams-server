@@ -40,7 +40,7 @@ const UserJoiSchema = Joi.object().keys({
     .required(),
   username: Joi.string()
     .alphanum()
-    .min(4)
+    .min(1)
     .max(30)
     .trim()
     .required(),
